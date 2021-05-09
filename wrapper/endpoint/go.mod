@@ -1,4 +1,4 @@
-module github.com/micro/go-plugins/wrapper/endpoint/v2
+module github.com/itzmanish/go-micro-plugins/wrapper/endpoint/v2
 
 go 1.13
 
