@@ -10,11 +10,10 @@ import (
 	"testing"
 
 	metrics "github.com/VictoriaMetrics/metrics"
-	"github.com/itzmanish/go-micro/v2/client"
-	"github.com/itzmanish/go-micro/v2/registry/memory"
-	"github.com/itzmanish/go-micro/v2/router"
-	rrouter "github.com/itzmanish/go-micro/v2/router/registry"
-	"github.com/itzmanish/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/client/selector"
+	"github.com/micro/go-micro/v2/registry/memory"
+	"github.com/micro/go-micro/v2/server"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,14 +38,13 @@ func (t *testHandler) Method(ctx context.Context, req *TestRequest, rsp *TestRes
 func TestVictoriametrics(t *testing.T) {
 	// setup
 	registry := memory.NewRegistry()
+	sel := selector.NewSelector(selector.Registry(registry))
 
 	name := "test"
 	id := "id-1234567890"
 	version := "1.2.3.4"
 
-	c := client.NewClient(
-		client.Router(rrouter.NewRouter(router.Registry(registry))),
-	)
+	c := client.NewClient(client.Selector(sel))
 	s := server.NewServer(
 		server.Name(name),
 		server.Version(version),

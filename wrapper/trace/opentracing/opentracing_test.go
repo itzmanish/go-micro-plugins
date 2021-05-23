@@ -4,18 +4,17 @@ import (
 	"context"
 	"testing"
 
-	"github.com/itzmanish/go-micro/v2/client"
-	microerr "github.com/itzmanish/go-micro/v2/errors"
-	"github.com/itzmanish/go-micro/v2/registry/memory"
-	"github.com/itzmanish/go-micro/v2/router"
-	rrouter "github.com/itzmanish/go-micro/v2/router/registry"
-	"github.com/itzmanish/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/client/selector"
+	microerr "github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/registry/memory"
+	"github.com/micro/go-micro/v2/server"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/mocktracer"
 	"github.com/stretchr/testify/assert"
 
-	cli "github.com/itzmanish/go-micro/v2/client"
-	srv "github.com/itzmanish/go-micro/v2/server"
+	cli "github.com/micro/go-micro/v2/client"
+	srv "github.com/micro/go-micro/v2/server"
 )
 
 type Test interface {
@@ -67,13 +66,14 @@ func TestClient(t *testing.T) {
 			tracer := mocktracer.New()
 
 			registry := memory.NewRegistry()
+			sel := selector.NewSelector(selector.Registry(registry))
 
 			serverName := "micro.server.name"
 			serverID := "id-1234567890"
 			serverVersion := "1.0.0"
 
 			c := cli.NewClient(
-				client.Router(rrouter.NewRouter(router.Registry(registry))),
+				client.Selector(sel),
 				client.WrapCall(NewCallWrapper(tracer)),
 			)
 
